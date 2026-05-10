@@ -1,0 +1,195 @@
+title: Eastron SDM72D-M
+views:
+  - title: Overview
+    path: eastron-overview
+    icon: mdi:lightning-bolt
+    cards:
+
+      # ── Main header card ──────────────────────────────────────────────────
+      - type: entities
+        title: "⚡ Eastron SDM72D-M — System Totals"
+        entities:
+          - entity: sensor.sdm72d_total_active_power
+            name: Total Active Power
+            icon: mdi:flash
+          - entity: sensor.sdm72d_total_apparent_power
+            name: Total Apparent Power
+            icon: mdi:flash-outline
+          - entity: sensor.sdm72d_total_reactive_power
+            name: Total Reactive Power
+            icon: mdi:flash-circle
+          - entity: sensor.sdm72d_total_power_factor
+            name: Total Power Factor
+            icon: mdi:angle-acute
+          - entity: sensor.sdm72d_frequency
+            name: Frequency
+            icon: mdi:sine-wave
+          - type: divider
+          - entity: sensor.sdm72d_import_energy
+            name: Import Energy (kWh)
+            icon: mdi:transmission-tower-import
+          - entity: sensor.sdm72d_export_energy
+            name: Export Energy (kWh)
+            icon: mdi:transmission-tower-export
+          - entity: sensor.sdm72d_total_active_energy
+            name: Total Active Energy
+            icon: mdi:counter
+          - entity: sensor.sdm72d_total_reactive_energy
+            name: Total Reactive Energy
+            icon: mdi:counter
+
+      # ── Average summary ───────────────────────────────────────────────────
+      - type: glance
+        title: "Average Values"
+        columns: 3
+        entities:
+          - entity: sensor.sdm72d_avg_ln_voltage
+            name: Avg L-N V
+          - entity: sensor.sdm72d_avg_ll_voltage
+            name: Avg L-L V
+          - entity: sensor.sdm72d_avg_current
+            name: Avg Current
+          - entity: sensor.sdm72d_neutral_current
+            name: Neutral A
+          - entity: sensor.sdm72d_frequency
+            name: Frequency
+
+  - title: Per Phase
+    path: eastron-phases
+    icon: mdi:chart-bar
+    cards:
+
+      # ── Phase voltages ─────────────────────────────────────────────────────
+      - type: glance
+        title: "Phase Voltages (L-N)"
+        columns: 3
+        entities:
+          - entity: sensor.sdm72d_l1_voltage
+            name: L1
+          - entity: sensor.sdm72d_l2_voltage
+            name: L2
+          - entity: sensor.sdm72d_l3_voltage
+            name: L3
+
+      # ── Line voltages ──────────────────────────────────────────────────────
+      - type: glance
+        title: "Line-to-Line Voltages"
+        columns: 3
+        entities:
+          - entity: sensor.sdm72d_l1l2_voltage
+            name: L1-L2
+          - entity: sensor.sdm72d_l2l3_voltage
+            name: L2-L3
+          - entity: sensor.sdm72d_l3l1_voltage
+            name: L3-L1
+
+      # ── Phase currents ─────────────────────────────────────────────────────
+      - type: glance
+        title: "Phase Currents"
+        columns: 3
+        entities:
+          - entity: sensor.sdm72d_l1_current
+            name: L1
+          - entity: sensor.sdm72d_l2_current
+            name: L2
+          - entity: sensor.sdm72d_l3_current
+            name: L3
+
+      # ── Active power ───────────────────────────────────────────────────────
+      - type: glance
+        title: "Active Power (W)"
+        columns: 3
+        entities:
+          - entity: sensor.sdm72d_l1_active_power
+            name: L1
+          - entity: sensor.sdm72d_l2_active_power
+            name: L2
+          - entity: sensor.sdm72d_l3_active_power
+            name: L3
+
+      # ── Reactive power ─────────────────────────────────────────────────────
+      - type: glance
+        title: "Reactive Power (VAr)"
+        columns: 3
+        entities:
+          - entity: sensor.sdm72d_l1_reactive_power
+            name: L1
+          - entity: sensor.sdm72d_l2_reactive_power
+            name: L2
+          - entity: sensor.sdm72d_l3_reactive_power
+            name: L3
+
+      # ── Apparent power ─────────────────────────────────────────────────────
+      - type: glance
+        title: "Apparent Power (VA)"
+        columns: 3
+        entities:
+          - entity: sensor.sdm72d_l1_apparent_power
+            name: L1
+          - entity: sensor.sdm72d_l2_apparent_power
+            name: L2
+          - entity: sensor.sdm72d_l3_apparent_power
+            name: L3
+
+      # ── Power factor ───────────────────────────────────────────────────────
+      - type: glance
+        title: "Power Factor"
+        columns: 3
+        entities:
+          - entity: sensor.sdm72d_l1_power_factor
+            name: L1
+          - entity: sensor.sdm72d_l2_power_factor
+            name: L2
+          - entity: sensor.sdm72d_l3_power_factor
+            name: L3
+
+  - title: Energy History
+    path: eastron-energy
+    icon: mdi:chart-line
+    cards:
+      - type: energy-date-selection
+
+      - type: statistics-graph
+        title: Import vs Export Energy
+        entities:
+          - entity: sensor.sdm72d_import_energy
+            name: Import
+          - entity: sensor.sdm72d_export_energy
+            name: Export
+        stat_types:
+          - sum
+        period: day
+
+      - type: statistics-graph
+        title: Total Active Power History
+        entities:
+          - entity: sensor.sdm72d_total_active_power
+            name: Active Power
+        stat_types:
+          - mean
+          - max
+        period: hour
+
+      - type: history-graph
+        title: Phase Voltages (Last 24h)
+        entities:
+          - entity: sensor.sdm72d_l1_voltage
+            name: L1
+          - entity: sensor.sdm72d_l2_voltage
+            name: L2
+          - entity: sensor.sdm72d_l3_voltage
+            name: L3
+        hours_to_show: 24
+        refresh_interval: 60
+
+      - type: history-graph
+        title: Phase Currents (Last 24h)
+        entities:
+          - entity: sensor.sdm72d_l1_current
+            name: L1
+          - entity: sensor.sdm72d_l2_current
+            name: L2
+          - entity: sensor.sdm72d_l3_current
+            name: L3
+        hours_to_show: 24
+        refresh_interval: 60

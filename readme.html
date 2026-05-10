@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eastron SDM72D-M — Home Assistant Setup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f1117; color: #e2e8f0; line-height: 1.6; }
+  header { background: linear-gradient(135deg, #1a56db, #0e9f6e); padding: 2.5rem 2rem; }
+  header h1 { font-size: 2rem; font-weight: 700; color: #fff; }
+  header p  { color: rgba(255,255,255,0.8); margin-top: 0.4rem; font-size: 1.05rem; }
+  .container { max-width: 1050px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h2 { font-size: 1.25rem; font-weight: 600; color: #93c5fd; margin: 2.5rem 0 1rem;
+       border-left: 4px solid #1a56db; padding-left: 0.75rem; }
+  h3 { font-size: 1rem; font-weight: 600; color: #6ee7b7; margin: 1.4rem 0 0.6rem; }
+  p  { margin: 0.5rem 0; color: #cbd5e1; }
+  code { background: #1e293b; color: #7dd3fc; padding: 0.15em 0.4em; border-radius: 4px;
+         font-family: 'Consolas', 'Monaco', monospace; font-size: 0.88em; }
+  pre  { background: #1e293b; border: 1px solid #334155; border-radius: 8px;
+         padding: 1.1rem 1.2rem; overflow-x: auto; margin: 0.8rem 0;
+         font-family: 'Consolas', 'Monaco', monospace; font-size: 0.875rem; line-height: 1.7; color: #e2e8f0; }
+  pre .c { color: #64748b; }
+  table { width: 100%; border-collapse: collapse; margin: 0.8rem 0; font-size: 0.9rem; }
+  th { background: #1e293b; color: #93c5fd; text-align: left; padding: 0.6rem 0.9rem; font-weight: 600; }
+  td { padding: 0.55rem 0.9rem; border-bottom: 1px solid #1e293b; color: #cbd5e1; }
+  tr:hover td { background: #1e293b55; }
+  .card { background: #1a2035; border: 1px solid #1e3a5f; border-radius: 10px;
+          padding: 1.3rem 1.5rem; margin: 1rem 0; }
+  .badge { display: inline-block; padding: 0.2em 0.65em; border-radius: 9999px;
+           font-size: 0.78em; font-weight: 600; margin-left: 0.4rem; vertical-align: middle; }
+  .badge-green { background: #065f46; color: #6ee7b7; }
+  .badge-blue  { background: #1e3a8a; color: #93c5fd; }
+  .badge-yellow{ background: #78350f; color: #fcd34d; }
+  .step { display: flex; gap: 1rem; margin: 0.6rem 0; align-items: flex-start; }
+  .step-num { background: #1a56db; color: #fff; border-radius: 50%; width: 1.6rem; height: 1.6rem;
+              display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
+              font-weight: 700; flex-shrink: 0; margin-top: 0.05rem; }
+  .step-text { color: #cbd5e1; }
+  .warn { background: #451a03; border: 1px solid #92400e; border-radius: 8px;
+          padding: 0.8rem 1rem; margin: 0.8rem 0; color: #fcd34d; font-size: 0.9rem; }
+  .ok   { background: #052e16; border: 1px solid #166534; border-radius: 8px;
+          padding: 0.8rem 1rem; margin: 0.8rem 0; color: #6ee7b7; font-size: 0.9rem; }
+  .arch { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+          background: #1e293b; border-radius: 8px; padding: 1rem 1.2rem; margin: 0.8rem 0; font-size: 0.9rem; }
+  .arch-box { background: #1a56db22; border: 1px solid #1a56db; border-radius: 6px;
+              padding: 0.35rem 0.8rem; color: #93c5fd; font-weight: 600; }
+  .arch-arrow { color: #475569; font-size: 1.2rem; }
+  footer { text-align: center; color: #475569; font-size: 0.8rem; padding: 2rem; margin-top: 2rem;
+           border-top: 1px solid #1e293b; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Eastron SDM72D-M &rarr; Home Assistant</h1>
+  <p>Complete setup documentation &mdash; what was done and how it works</p>
+</header>
+
+<div class="container">
+
+  <!-- HARDWARE -->
+  <h2>Hardware</h2>
+  <table>
+    <tr><th>Device</th><th>Model</th><th>Role</th></tr>
+    <tr><td>Energy meter</td><td>Eastron SDM72D-M-2</td><td>Measures voltage, current, power, energy (direct connection, up to 100A)</td></tr>
+    <tr><td>RS485 gateway</td><td>Waveshare 8-CH RS485 TO POE ETH (B)</td><td>Converts RS485 serial to Ethernet (Modbus TCP)</td></tr>
+    <tr><td>Home automation</td><td>Home Assistant 2026.5.1</td><td>Receives and displays all measurements</td></tr>
+  </table>
+
+  <!-- NETWORK -->
+  <h2>Network Layout</h2>
+  <table>
+    <tr><th>Device</th><th>IP</th><th>Port</th></tr>
+    <tr><td>Home Assistant</td><td><code>192.168.0.4</code></td><td>8123 (web), 22 (SSH)</td></tr>
+    <tr><td>Waveshare CH1 (Eastron)</td><td><code>192.168.0.22</code></td><td>502 (Modbus TCP)</td></tr>
+    <tr><td>Bridge machine</td><td><code>192.168.0.17</code></td><td>&mdash;</td></tr>
+    <tr><td>Proxmox</td><td><code>192.168.0.15</code></td><td>&mdash;</td></tr>
+  </table>
+
+  <!-- WIRING -->
+  <h2>Physical Wiring</h2>
+
+  <h3>RS485 Communication</h3>
+  <table>
+    <tr><th>Eastron terminal</th><th>Waveshare terminal</th></tr>
+    <tr><td><code>A+</code></td><td>Channel 1, A</td></tr>
+    <tr><td><code>B-</code></td><td>Channel 1, B</td></tr>
+  </table>
+
+  <h3>Power / Measurement (1 Phase 2 Wire &mdash; per manual page 11)</h3>
+  <table>
+    <tr><th>Wire</th><th>Eastron terminal</th><th>Notes</th></tr>
+    <tr><td>Mains phase (L1)</td><td><strong>1</strong> (top-left)</td><td>Supply side input</td></tr>
+    <tr><td>Mains neutral (N)</td><td><strong>4</strong> (top-right)</td><td>Supply side neutral</td></tr>
+    <tr><td>Load L1 out</td><td><strong>5</strong> (bottom-left)</td><td>Connect load here to measure current</td></tr>
+    <tr><td>Load N out</td><td><strong>8</strong> (bottom-right)</td><td>Connect load neutral here</td></tr>
+  </table>
+  <div class="ok">Terminals 1 and 4 power the meter and measure voltage. Current is only measured when a load is wired between terminals 5&rarr;8. Zero current/power with no load is normal.</div>
+
+  <!-- COMMUNICATION -->
+  <h2>How Communication Works</h2>
+  <div class="arch">
+    <div class="arch-box">Eastron SDM72D-M</div>
+    <span class="arch-arrow">&#8594; RS485 &#8594;</span>
+    <div class="arch-box">Waveshare<br><small>192.168.0.22:502</small></div>
+    <span class="arch-arrow">&#8594; Modbus TCP &#8594;</span>
+    <div class="arch-box">Home Assistant<br><small>192.168.0.4</small></div>
+  </div>
+
+  <p>The Waveshare gateway bridges RS485 serial (Eastron) to Modbus TCP (Ethernet).</p>
+  <p>Waveshare CH1 settings: <code>Modbus TCP&rarr;RTU</code>, port <code>502</code>, baud <code>9600</code>, <code>8N1</code>, no parity, no password.</p>
+  <p>Eastron settings: Modbus slave address <code>1</code>, baud <code>9600</code>, <code>8N1</code>. All registers use function code <code>04</code> (Read Input Registers), values are 32-bit floats.</p>
+
+  <!-- HA DATA -->
+  <h2>How Home Assistant Receives Data</h2>
+  <p>Two parallel methods are active simultaneously:</p>
+
+  <div class="card">
+    <h3>Method 1 &mdash; Modbus YAML <span class="badge badge-green">Primary</span></h3>
+    <p>HA polls the Waveshare directly via Modbus TCP, configured in <code>/config/modbus_eastron.yaml</code>.</p>
+    <p>Included in <code>/config/configuration.yaml</code> via: <code>modbus: !include modbus_eastron.yaml</code></p>
+    <p>Poll interval: every <strong>30 seconds</strong> (60 s for energy counters).</p>
+    <p>Entity IDs: <code>sensor.sdm72d_*</code> &nbsp; e.g. <code>sensor.sdm72d_l1_voltage</code></p>
+    <p style="margin-top:0.6rem"><em>The Lovelace dashboard uses these entity IDs.</em></p>
+  </div>
+
+  <div class="card">
+    <h3>Method 2 &mdash; MQTT Bridge <span class="badge badge-blue">Backup</span></h3>
+    <p>A Python script (<code>eastron_mqtt_bridge.py</code>) runs as a systemd service on <code>192.168.0.17</code>.</p>
+    <p>It polls Modbus TCP &rarr; publishes values to the Mosquitto MQTT broker on HA &rarr; HA auto-discovers sensors.</p>
+    <p>Entity IDs: <code>sensor.eastron_sdm72d_m_sdm72d_*</code></p>
+    <pre>systemctl --user status eastron_bridge    <span class="c"># check status</span>
+systemctl --user restart eastron_bridge   <span class="c"># restart</span>
+journalctl --user -u eastron_bridge -f    <span class="c"># live logs</span></pre>
+  </div>
+
+  <!-- SENSORS -->
+  <h2>Sensors (34 total)</h2>
+  <table>
+    <tr><th>Entity ID</th><th>Measurement</th><th>Unit</th></tr>
+    <tr><td><code>sensor.sdm72d_l1_voltage</code> / <code>l2</code> / <code>l3</code></td><td>Phase voltage (L-N)</td><td>V</td></tr>
+    <tr><td><code>sensor.sdm72d_l1_l2_voltage</code> / <code>l2_l3</code> / <code>l3_l1</code></td><td>Line-to-line voltage</td><td>V</td></tr>
+    <tr><td><code>sensor.sdm72d_average_l_n_voltage</code></td><td>Average L-N voltage</td><td>V</td></tr>
+    <tr><td><code>sensor.sdm72d_average_l_l_voltage</code></td><td>Average L-L voltage</td><td>V</td></tr>
+    <tr><td><code>sensor.sdm72d_l1_current</code> / <code>l2</code> / <code>l3</code></td><td>Phase current</td><td>A</td></tr>
+    <tr><td><code>sensor.sdm72d_average_line_current</code></td><td>Average line current</td><td>A</td></tr>
+    <tr><td><code>sensor.sdm72d_neutral_current</code></td><td>Neutral current</td><td>A</td></tr>
+    <tr><td><code>sensor.sdm72d_l1_active_power</code> / <code>l2</code> / <code>l3</code></td><td>Active power per phase</td><td>W</td></tr>
+    <tr><td><code>sensor.sdm72d_l1_apparent_power</code> / <code>l2</code> / <code>l3</code></td><td>Apparent power per phase</td><td>VA</td></tr>
+    <tr><td><code>sensor.sdm72d_l1_reactive_power</code> / <code>l2</code> / <code>l3</code></td><td>Reactive power per phase</td><td>var</td></tr>
+    <tr><td><code>sensor.sdm72d_l1_power_factor</code> / <code>l2</code> / <code>l3</code></td><td>Power factor per phase</td><td>&mdash;</td></tr>
+    <tr><td><code>sensor.sdm72d_total_active_power</code></td><td>Total active power</td><td>W</td></tr>
+    <tr><td><code>sensor.sdm72d_total_apparent_power</code></td><td>Total apparent power</td><td>VA</td></tr>
+    <tr><td><code>sensor.sdm72d_total_reactive_power</code></td><td>Total reactive power</td><td>var</td></tr>
+    <tr><td><code>sensor.sdm72d_total_power_factor</code></td><td>Total power factor</td><td>&mdash;</td></tr>
+    <tr><td><code>sensor.sdm72d_frequency</code></td><td>Grid frequency</td><td>Hz</td></tr>
+    <tr><td><code>sensor.sdm72d_import_energy</code></td><td>Imported energy</td><td>kWh</td></tr>
+    <tr><td><code>sensor.sdm72d_export_energy</code></td><td>Exported energy</td><td>kWh</td></tr>
+    <tr><td><code>sensor.sdm72d_total_active_energy</code></td><td>Total active energy</td><td>kWh</td></tr>
+    <tr><td><code>sensor.sdm72d_total_reactive_energy</code></td><td>Total reactive energy</td><td>kVArh</td></tr>
+  </table>
+
+  <!-- DASHBOARD -->
+  <h2>Lovelace Dashboard</h2>
+  <p>URL: <a href="http://192.168.0.4:8123/lovelace/eastron-overview" style="color:#93c5fd">http://192.168.0.4:8123/lovelace/eastron-overview</a></p>
+  <p>3 views: <strong>Overview</strong> (gauge dials + totals) &bull; <strong>Per Phase</strong> (gauge dials per phase + power/PF) &bull; <strong>Energy History</strong> (graphs)</p>
+  <p>The dashboard was pushed directly to HA via the WebSocket API (<code>lovelace/config/save</code>) &mdash; no YAML file on disk.</p>
+
+  <h2>Graphical Gauge Cards</h2>
+  <p>The dashboard uses HA's built-in <code>gauge</code> card (no HACS or extra addons needed). Each gauge has a needle and three colour zones.</p>
+
+  <table>
+    <tr><th>Gauge</th><th>Range</th><th>Green</th><th>Yellow</th><th>Red</th></tr>
+    <tr><td>Voltage (L1/L2/L3)</td><td>195–265 V</td><td>216–253 V</td><td>253–258 V</td><td>&ge; 258 V</td></tr>
+    <tr><td>Current (L1/L2/L3)</td><td>0–100 A</td><td>0–63 A</td><td>63–85 A</td><td>&ge; 85 A</td></tr>
+    <tr><td>Active Power</td><td>0–23 000 W</td><td>0–15 kW</td><td>15–20 kW</td><td>&ge; 20 kW</td></tr>
+    <tr><td>Frequency</td><td>49–51 Hz</td><td>49.5–50.5 Hz</td><td>50.5–50.8 Hz</td><td>&ge; 50.8 Hz</td></tr>
+    <tr><td>Power Factor</td><td>0–1</td><td>&ge; 0.9</td><td>0.7–0.9</td><td>&lt; 0.7</td></tr>
+    <tr><td>Neutral Current</td><td>0–100 A</td><td>0–10 A</td><td>10–30 A</td><td>&ge; 30 A</td></tr>
+  </table>
+
+  <p>Example gauge card YAML (add via HA dashboard edit &rarr; Add Card &rarr; Manual):</p>
+  <pre>type: gauge
+entity: sensor.sdm72d_l1_voltage
+name: L1 Voltage
+min: 195
+max: 265
+needle: true
+severity:
+  green: 216
+  yellow: 253
+  red: 258</pre>
+
+  <!-- SSH -->
+  <h2>SSH Access to Home Assistant</h2>
+  <p>Addon: <strong>Advanced SSH &amp; Web Terminal</strong> (installed and running, port 22).</p>
+  <div class="warn">Username is <strong>hassio</strong> &mdash; not "sahel" or "root".</div>
+  <pre>ssh hassio@192.168.0.4</pre>
+
+  <h3>Add your own machine's SSH key</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Get your public key: <code>cat ~/.ssh/id_ed25519.pub</code></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">In HA: Settings &rarr; Add-ons &rarr; Advanced SSH &amp; Web Terminal &rarr; <strong>Configuration</strong> tab</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Paste the key under <code>authorized_keys</code> &rarr; Save &rarr; Restart addon</div></div>
+
+  <h3>Or use password</h3>
+  <p>In the addon Configuration tab, set <code>password: yourpassword</code> &rarr; Save &rarr; Restart.</p>
+
+  <!-- WHAT WAS DONE -->
+  <h2>What Was Done During Setup</h2>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Scanned the network to discover all Waveshare channel IPs and the real HA address (user had typos in the IPs).</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Verified Waveshare CH1 was already correctly configured as Modbus TCP&rarr;RTU &mdash; no changes needed.</div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Created <code>modbus_eastron.yaml</code> with all 34 register mappings covering every measurement the Eastron provides.</div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">HA had no file access (no SSH addon running, no Samba). Used the HA REST and WebSocket APIs instead of editing files manually.</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text">Pushed the Lovelace dashboard directly to HA via WebSocket (<code>lovelace/config/save</code>).</div></div>
+  <div class="step"><div class="step-num">6</div><div class="step-text">Discovered HA had MQTT (Mosquitto) installed. Created 34 MQTT auto-discovery sensor configs via the <code>mqtt.publish</code> REST service.</div></div>
+  <div class="step"><div class="step-num">7</div><div class="step-text">Wrote <code>eastron_mqtt_bridge.py</code> (pure Python, no extra packages) and deployed it as a systemd user service.</div></div>
+  <div class="step"><div class="step-num">8</div><div class="step-text">Installed and configured the Advanced SSH addon via the HA supervisor WebSocket API. Discovered correct username is <code>hassio</code>.</div></div>
+  <div class="step"><div class="step-num">9</div><div class="step-text">Got SSH access &rarr; found <code>modbus_eastron.yaml</code> already on HA but with a duplicate <code>modbus:</code> root key causing HA to reject it. Fixed the file (removed the root key and de-indented).</div></div>
+  <div class="step"><div class="step-num">10</div><div class="step-text">Restarted HA core &rarr; Modbus integration loaded &rarr; all 34 Modbus sensors came live.</div></div>
+  <div class="step"><div class="step-num">11</div><div class="step-text">Fixed dashboard entity IDs: the Modbus sensor names differ from the MQTT ones (e.g. <code>average_l_n_voltage</code> vs <code>avg_ln_voltage</code>). Updated the dashboard to use the correct Modbus IDs.</div></div>
+
+  <!-- NORMAL VALUES -->
+  <h2>Expected Values for 1-Phase Connection on L1</h2>
+  <table>
+    <tr><th>Sensor</th><th>Expected value</th><th>Reason</th></tr>
+    <tr><td>L1 voltage</td><td>~230&ndash;240 V</td><td>Normal European mains</td></tr>
+    <tr><td>L2, L3 voltage</td><td>0 V</td><td>Not connected &mdash; normal</td></tr>
+    <tr><td>Frequency</td><td>~50.0 Hz</td><td>Normal grid frequency</td></tr>
+    <tr><td>Avg L-N voltage</td><td>~79 V</td><td>= L1/3 because L2+L3 are 0</td></tr>
+    <tr><td>Avg L-L voltage</td><td>~159 V</td><td>Same reason</td></tr>
+    <tr><td>Current / Power</td><td>0</td><td>No load wired through terminals 5+8 yet</td></tr>
+    <tr><td>Eastron screen: <code>00000.00</code></td><td>Normal</td><td>Energy counter in kWh &mdash; starts at 0 on new meter</td></tr>
+  </table>
+
+  <!-- MULTIPLE METERS -->
+  <h2>Multiple Eastron Meters</h2>
+  <p>Two scenarios depending on how you connect the additional meters.</p>
+
+  <div class="card">
+    <h3>Scenario A &mdash; Same RS485 bus, different slave addresses <span class="badge badge-blue">Daisy-chain</span></h3>
+    <p>All meters share one Waveshare channel. Each meter must have a <strong>unique Modbus slave address</strong> set on the meter itself (factory default is 1 for all).</p>
+    <p>Change the address on each meter via its front panel buttons before wiring them together on the same A/B bus.</p>
+    <p>In <code>/config/modbus_eastron.yaml</code>, add a separate hub block per meter (or reuse the same hub with different <code>slave:</code> numbers):</p>
+    <pre><span class="c"># Meter 1 — slave address 1 on Waveshare CH1</span>
+- name: "eastron_meter1"
+  type: tcp
+  host: 192.168.0.22
+  port: 502
+  sensors:
+    - name: "M1 L1 Voltage"
+      unique_id: m1_sdm72d_l1_voltage
+      slave: 1
+      address: 0
+      input_type: input
+      data_type: float32
+      unit_of_measurement: "V"
+      device_class: voltage
+      state_class: measurement
+      scan_interval: 30
+    <span class="c"># ... repeat all 34 registers with slave: 1</span>
+
+<span class="c"># Meter 2 — slave address 2, same Waveshare channel</span>
+- name: "eastron_meter2"
+  type: tcp
+  host: 192.168.0.22
+  port: 502
+  sensors:
+    - name: "M2 L1 Voltage"
+      unique_id: m2_sdm72d_l1_voltage
+      slave: 2
+      address: 0
+      input_type: input
+      data_type: float32
+      unit_of_measurement: "V"
+      device_class: voltage
+      state_class: measurement
+      scan_interval: 30
+    <span class="c"># ... repeat all 34 registers with slave: 2</span></pre>
+    <p>Entity IDs: <code>sensor.m1_l1_voltage</code>, <code>sensor.m2_l1_voltage</code>, &hellip;</p>
+  </div>
+
+  <div class="card">
+    <h3>Scenario B &mdash; Different Waveshare channels, each with slave address 1 <span class="badge badge-green">Separate channels</span></h3>
+    <p>Each meter connects to its own Waveshare channel (separate A/B pair). All meters can keep slave address 1 (factory default).</p>
+
+    <p>Available Waveshare channels in this installation:</p>
+    <table>
+      <tr><th>Channel</th><th>IP</th><th>Channel</th><th>IP</th></tr>
+      <tr><td>CH1 (in use)</td><td><code>192.168.0.22</code></td><td>CH5</td><td><code>192.168.0.33</code></td></tr>
+      <tr><td>CH2</td><td><code>192.168.0.31</code></td><td>CH6</td><td><code>192.168.0.40</code></td></tr>
+      <tr><td>CH3</td><td><code>192.168.0.12</code></td><td>CH7</td><td><code>192.168.0.18</code></td></tr>
+      <tr><td>CH4</td><td><code>192.168.0.39</code></td><td>CH8</td><td><code>192.168.0.49</code></td></tr>
+    </table>
+
+    <pre><span class="c"># Meter on CH1 (already configured)</span>
+- name: "eastron_ch1"
+  type: tcp
+  host: 192.168.0.22
+  port: 502
+  sensors:
+    - name: "CH1 L1 Voltage"
+      unique_id: ch1_sdm72d_l1_voltage
+      slave: 1
+      address: 0
+      input_type: input
+      data_type: float32
+      unit_of_measurement: "V"
+      device_class: voltage
+      state_class: measurement
+      scan_interval: 30
+    <span class="c"># ... all 34 registers</span>
+
+<span class="c"># Second meter on CH2</span>
+- name: "eastron_ch2"
+  type: tcp
+  host: 192.168.0.31
+  port: 502
+  sensors:
+    - name: "CH2 L1 Voltage"
+      unique_id: ch2_sdm72d_l1_voltage
+      slave: 1
+      address: 0
+      input_type: input
+      data_type: float32
+      unit_of_measurement: "V"
+      device_class: voltage
+      state_class: measurement
+      scan_interval: 30
+    <span class="c"># ... all 34 registers</span></pre>
+    <p>Entity IDs: <code>sensor.ch1_l1_voltage</code>, <code>sensor.ch2_l1_voltage</code>, &hellip;</p>
+  </div>
+
+  <div class="warn">
+    <strong>Important rules for multiple meters:</strong><br>
+    &bull; Every <code>unique_id</code> must be globally unique &mdash; use a clear prefix per meter (<code>m1_</code>, <code>m2_</code>, <code>kitchen_</code>, <code>garage_</code>, etc.)<br>
+    &bull; After editing the YAML, SSH into HA and run <code>ha core restart</code>, or use HA UI: Settings &rarr; System &rarr; Restart.<br>
+    &bull; Each meter adds 34 sensors. With 8 meters you get 272 sensors &mdash; increase <code>scan_interval</code> to reduce Modbus bus load.
+  </div>
+
+  <!-- TROUBLESHOOTING -->
+  <h2>Troubleshooting</h2>
+
+  <h3>Meter screen is completely blank</h3>
+  <p>The meter has no power. Check:</p>
+  <ul style="margin:0.5rem 0 0.5rem 1.5rem; color:#cbd5e1">
+    <li>Mains circuit feeding terminals 1 and 4 is live (breaker on)</li>
+    <li>Wires are fully inserted and terminal screws are tightened</li>
+  </ul>
+
+  <h3>Sensors show "unavailable" in HA</h3>
+  <pre>ping 192.168.0.22                     <span class="c"># is Waveshare reachable?</span>
+ssh hassio@192.168.0.4
+grep -i modbus /config/home-assistant.log  <span class="c"># check for errors</span></pre>
+
+  <h3>Modbus sensors disappeared after HA restart</h3>
+  <pre>ssh hassio@192.168.0.4
+cat /config/configuration.yaml        <span class="c"># must contain: modbus: !include modbus_eastron.yaml</span>
+head -3 /config/modbus_eastron.yaml   <span class="c"># must start with: - name:  (NOT with modbus:)</span></pre>
+
+  <h3>MQTT bridge stopped</h3>
+  <pre>systemctl --user restart eastron_bridge
+journalctl --user -u eastron_bridge -f</pre>
+
+  <h3>Make MQTT bridge start on boot without login</h3>
+  <pre>sudo loginctl enable-linger akaw</pre>
+
+</div>
+
+<footer>
+  Eastron SDM72D-M &mdash; Home Assistant Setup &mdash; 2026-05-10
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,8 @@
+# Add this to your existing /config/configuration.yaml
+# Either paste the full modbus block here, OR use the include method:
+
+# Option A - Include from separate file (recommended):
+modbus: !include modbus_eastron.yaml
+
+# Option B - Paste directly in configuration.yaml:
+# (paste the full content of modbus_eastron.yaml here)

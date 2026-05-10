@@ -1,0 +1,15 @@
+[Unit]
+Description=Eastron SDM72D-M MQTT Bridge
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /data/claude_share/eastron_home_assistant/eastron_mqtt_bridge.py
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

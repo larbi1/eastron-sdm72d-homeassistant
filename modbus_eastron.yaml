@@ -1,0 +1,422 @@
+modbus:
+  - name: "eastron_sdm72dm"
+    type: tcp
+    host: 192.168.0.22        # Waveshare 8-CH RS485-1 channel IP
+    port: 502                  # Modbus TCP port (auto-set when Modbus TCP to RTU enabled)
+    sensors:
+
+      # ── Phase voltages (line-to-neutral) ──────────────────────────────────
+      - name: "SDM72D L1 Voltage"
+        unique_id: sdm72d_l1_voltage
+        slave: 1
+        address: 0             # Register 30001
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D L2 Voltage"
+        unique_id: sdm72d_l2_voltage
+        slave: 1
+        address: 2             # Register 30003
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D L3 Voltage"
+        unique_id: sdm72d_l3_voltage
+        slave: 1
+        address: 4             # Register 30005
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scan_interval: 30
+
+      # ── Phase currents ────────────────────────────────────────────────────
+      - name: "SDM72D L1 Current"
+        unique_id: sdm72d_l1_current
+        slave: 1
+        address: 6             # Register 30007
+        input_type: input
+        data_type: float32
+        precision: 2
+        unit_of_measurement: "A"
+        device_class: current
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D L2 Current"
+        unique_id: sdm72d_l2_current
+        slave: 1
+        address: 8             # Register 30009
+        input_type: input
+        data_type: float32
+        precision: 2
+        unit_of_measurement: "A"
+        device_class: current
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D L3 Current"
+        unique_id: sdm72d_l3_current
+        slave: 1
+        address: 10            # Register 30011
+        input_type: input
+        data_type: float32
+        precision: 2
+        unit_of_measurement: "A"
+        device_class: current
+        state_class: measurement
+        scan_interval: 30
+
+      # ── Active power per phase ────────────────────────────────────────────
+      - name: "SDM72D L1 Active Power"
+        unique_id: sdm72d_l1_active_power
+        slave: 1
+        address: 12            # Register 30013
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D L2 Active Power"
+        unique_id: sdm72d_l2_active_power
+        slave: 1
+        address: 14            # Register 30015
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D L3 Active Power"
+        unique_id: sdm72d_l3_active_power
+        slave: 1
+        address: 16            # Register 30017
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+        scan_interval: 30
+
+      # ── Apparent power per phase ──────────────────────────────────────────
+      - name: "SDM72D L1 Apparent Power"
+        unique_id: sdm72d_l1_apparent_power
+        slave: 1
+        address: 18            # Register 30019
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "VA"
+        device_class: apparent_power
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D L2 Apparent Power"
+        unique_id: sdm72d_l2_apparent_power
+        slave: 1
+        address: 20            # Register 30021
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "VA"
+        device_class: apparent_power
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D L3 Apparent Power"
+        unique_id: sdm72d_l3_apparent_power
+        slave: 1
+        address: 22            # Register 30023
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "VA"
+        device_class: apparent_power
+        state_class: measurement
+        scan_interval: 30
+
+      # ── Reactive power per phase ──────────────────────────────────────────
+      - name: "SDM72D L1 Reactive Power"
+        unique_id: sdm72d_l1_reactive_power
+        slave: 1
+        address: 24            # Register 30025
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "var"
+        device_class: reactive_power
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D L2 Reactive Power"
+        unique_id: sdm72d_l2_reactive_power
+        slave: 1
+        address: 26            # Register 30027
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "var"
+        device_class: reactive_power
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D L3 Reactive Power"
+        unique_id: sdm72d_l3_reactive_power
+        slave: 1
+        address: 28            # Register 30029
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "var"
+        device_class: reactive_power
+        state_class: measurement
+        scan_interval: 30
+
+      # ── Power factor per phase ────────────────────────────────────────────
+      - name: "SDM72D L1 Power Factor"
+        unique_id: sdm72d_l1_power_factor
+        slave: 1
+        address: 30            # Register 30031
+        input_type: input
+        data_type: float32
+        precision: 3
+        unit_of_measurement: ""
+        device_class: power_factor
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D L2 Power Factor"
+        unique_id: sdm72d_l2_power_factor
+        slave: 1
+        address: 32            # Register 30033
+        input_type: input
+        data_type: float32
+        precision: 3
+        unit_of_measurement: ""
+        device_class: power_factor
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D L3 Power Factor"
+        unique_id: sdm72d_l3_power_factor
+        slave: 1
+        address: 34            # Register 30035
+        input_type: input
+        data_type: float32
+        precision: 3
+        unit_of_measurement: ""
+        device_class: power_factor
+        state_class: measurement
+        scan_interval: 30
+
+      # ── System totals ─────────────────────────────────────────────────────
+      - name: "SDM72D Average L-N Voltage"
+        unique_id: sdm72d_avg_ln_voltage
+        slave: 1
+        address: 42            # Register 30043
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D Average Line Current"
+        unique_id: sdm72d_avg_current
+        slave: 1
+        address: 46            # Register 30047
+        input_type: input
+        data_type: float32
+        precision: 2
+        unit_of_measurement: "A"
+        device_class: current
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D Total Active Power"
+        unique_id: sdm72d_total_active_power
+        slave: 1
+        address: 52            # Register 30053
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D Total Apparent Power"
+        unique_id: sdm72d_total_apparent_power
+        slave: 1
+        address: 56            # Register 30057
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "VA"
+        device_class: apparent_power
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D Total Reactive Power"
+        unique_id: sdm72d_total_reactive_power
+        slave: 1
+        address: 60            # Register 30061
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "var"
+        device_class: reactive_power
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D Total Power Factor"
+        unique_id: sdm72d_total_power_factor
+        slave: 1
+        address: 62            # Register 30063
+        input_type: input
+        data_type: float32
+        precision: 3
+        unit_of_measurement: ""
+        device_class: power_factor
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D Frequency"
+        unique_id: sdm72d_frequency
+        slave: 1
+        address: 70            # Register 30071
+        input_type: input
+        data_type: float32
+        precision: 2
+        unit_of_measurement: "Hz"
+        device_class: frequency
+        state_class: measurement
+        scan_interval: 30
+
+      # ── Energy (kWh) – slower polling ─────────────────────────────────────
+      - name: "SDM72D Import Energy"
+        unique_id: sdm72d_import_energy
+        slave: 1
+        address: 72            # Register 30073
+        input_type: input
+        data_type: float32
+        precision: 2
+        unit_of_measurement: "kWh"
+        device_class: energy
+        state_class: total_increasing
+        scan_interval: 60
+
+      - name: "SDM72D Export Energy"
+        unique_id: sdm72d_export_energy
+        slave: 1
+        address: 74            # Register 30075
+        input_type: input
+        data_type: float32
+        precision: 2
+        unit_of_measurement: "kWh"
+        device_class: energy
+        state_class: total_increasing
+        scan_interval: 60
+
+      - name: "SDM72D Total Active Energy"
+        unique_id: sdm72d_total_active_energy
+        slave: 1
+        address: 342           # Register 30343
+        input_type: input
+        data_type: float32
+        precision: 2
+        unit_of_measurement: "kWh"
+        device_class: energy
+        state_class: total_increasing
+        scan_interval: 60
+
+      - name: "SDM72D Total Reactive Energy"
+        unique_id: sdm72d_total_reactive_energy
+        slave: 1
+        address: 344           # Register 30345
+        input_type: input
+        data_type: float32
+        precision: 2
+        unit_of_measurement: "kVArh"
+        state_class: total_increasing
+        scan_interval: 60
+
+      # ── Line-to-line voltages ─────────────────────────────────────────────
+      - name: "SDM72D L1-L2 Voltage"
+        unique_id: sdm72d_l1l2_voltage
+        slave: 1
+        address: 200           # Register 30201
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D L2-L3 Voltage"
+        unique_id: sdm72d_l2l3_voltage
+        slave: 1
+        address: 202           # Register 30203
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D L3-L1 Voltage"
+        unique_id: sdm72d_l3l1_voltage
+        slave: 1
+        address: 204           # Register 30205
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D Average L-L Voltage"
+        unique_id: sdm72d_avg_ll_voltage
+        slave: 1
+        address: 206           # Register 30207
+        input_type: input
+        data_type: float32
+        precision: 1
+        unit_of_measurement: "V"
+        device_class: voltage
+        state_class: measurement
+        scan_interval: 30
+
+      - name: "SDM72D Neutral Current"
+        unique_id: sdm72d_neutral_current
+        slave: 1
+        address: 224           # Register 30225
+        input_type: input
+        data_type: float32
+        precision: 2
+        unit_of_measurement: "A"
+        device_class: current
+        state_class: measurement
+        scan_interval: 30

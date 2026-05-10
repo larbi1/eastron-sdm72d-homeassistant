@@ -193,3 +193,67 @@ views:
             name: L3
         hours_to_show: 24
         refresh_interval: 60
+
+  # ── Statistics view ────────────────────────────────────────────────────────
+  - title: Statistics
+    path: statistics
+    icon: mdi:chart-bar
+    cards:
+
+      - type: statistics-graph
+        title: Energy Import / Export (Monthly)
+        period: month
+        stat_types:
+          - sum
+        entities:
+          - entity: sensor.sdm72d_import_energy
+            name: Import
+          - entity: sensor.sdm72d_export_energy
+            name: Export
+
+      - type: statistics-graph
+        title: Total Active Energy (Monthly)
+        period: month
+        stat_types:
+          - sum
+        entities:
+          - entity: sensor.sdm72d_total_active_energy
+            name: Total kWh
+
+      - type: statistics-graph
+        title: Total Active Power — Daily Mean / Max
+        period: day
+        stat_types:
+          - mean
+          - max
+        entities:
+          - entity: sensor.sdm72d_total_active_power
+            name: Total Power
+
+      - type: statistics-graph
+        title: Per-Phase Active Power (Daily Mean)
+        period: day
+        stat_types:
+          - mean
+        entities:
+          - entity: sensor.sdm72d_l1_active_power
+            name: L1
+          - entity: sensor.sdm72d_l2_active_power
+            name: L2
+          - entity: sensor.sdm72d_l3_active_power
+            name: L3
+
+      - type: statistics-graph
+        title: Per-Phase Voltage (Daily Mean / Min / Max)
+        period: day
+        stat_types:
+          - mean
+          - min
+          - max
+        entities:
+          - entity: sensor.sdm72d_l1_voltage
+            name: L1
+          - entity: sensor.sdm72d_l2_voltage
+            name: L2
+          - entity: sensor.sdm72d_l3_voltage
+            name: L3

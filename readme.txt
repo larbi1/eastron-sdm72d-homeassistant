@@ -89,11 +89,12 @@ SENSORS (34 total)
 
 LOVELACE DASHBOARD
 ------------------
-  URL: http://192.168.0.4:8123/lovelace/eastron-overview
-  3 views:
+  URL: http://192.168.0.4:8123/lovelace
+  4 views:
     Overview     — gauge dials (voltage, frequency, power, current, PF) + totals list
     Per Phase    — gauge dials per phase (voltage, current) + power/PF glance cards
-    Energy History — statistics and history graphs
+    Energy History — history graphs (raw sensor values, last 24h)
+    Statistics   — statistics-graph cards (daily/monthly aggregates)
 
   The dashboard is stored in HA in "storage" mode (not a YAML file).
   It was pushed directly via the HA WebSocket API.
@@ -127,6 +128,81 @@ GRAPHICAL GAUGE CARDS
     green  ≥ 0.9      (good)
     yellow ≥ 0.7      (acceptable)
     red    < 0.7      (poor)
+
+STATISTICS-GRAPH CARDS (Statistics view)
+-----------------------------------------
+  HA natively records long-term statistics for every sensor that has:
+    state_class: measurement   (power, voltage, current)
+    state_class: total_increasing  (energy counters in kWh)
+
+  These are stored hourly in the HA database automatically. No extra addon needed.
+
+  The Statistics view was added to the default Lovelace dashboard via the HA
+  WebSocket API (lovelace/config/save message), using a Python script that:
+    1. Authenticated via HA login flow API  (POST /auth/login_flow → /auth/token)
+    2. Opened a raw WebSocket to ws://192.168.0.4:8123/api/websocket
+    3. Fetched the existing dashboard config  (type: lovelace/config)
+    4. Appended the Statistics view
+    5. Saved it back  (type: lovelace/config/save)
+
+  The 5 statistics-graph cards in the Statistics view:
+
+  Card 1 — Energy Import / Export (Monthly)
+    type: statistics-graph
+    period: month
+    stat_types: [sum]
+    entities: sensor.sdm72d_import_energy, sensor.sdm72d_export_energy
+    → Shows total kWh imported and exported each month as a bar chart.
+
+  Card 2 — Total Active Energy (Monthly)
+    type: statistics-graph
+    period: month
+    stat_types: [sum]
+    entities: sensor.sdm72d_total_active_energy
+    → Shows total consumed energy per month.
+
+  Card 3 — Total Active Power — Daily Mean / Max
+    type: statistics-graph
+    period: day
+    stat_types: [mean, max]
+    entities: sensor.sdm72d_total_active_power
+    → Shows average and peak wattage per day.
+
+  Card 4 — Per-Phase Active Power (Daily Mean)
+    type: statistics-graph
+    period: day
+    stat_types: [mean]
+    entities: sensor.sdm72d_l1_active_power / l2 / l3
+    → Shows average wattage per phase per day (useful for load balancing).
+
+  Card 5 — Per-Phase Voltage (Daily Mean / Min / Max)
+    type: statistics-graph
+    period: day
+    stat_types: [mean, min, max]
+    entities: sensor.sdm72d_l1_voltage / l2 / l3
+    → Shows daily voltage stability per phase.
+
+  Switching period in the UI:
+    Each statistics-graph card has a period selector in its top-right corner.
+    Click it to switch between: hour / day / week / month / year.
+    The YAML only sets the default period; the user can change it live.
+
+  NOTE: HA does not backfill statistics. Data accumulates from the moment
+        the sensors were first created. There is no historical data before
+        the sensors came online.
+
+  YAML example for a statistics-graph card:
+
+    type: statistics-graph
+    title: Energy Import / Export (Monthly)
+    period: month
+    stat_types:
+      - sum
+    entities:
+      - entity: sensor.sdm72d_import_energy
+        name: Import
+      - entity: sensor.sdm72d_export_energy
+        name: Export
 
 SSH ACCESS TO HOME ASSISTANT
 -----------------------------
@@ -180,6 +256,7 @@ WHAT HAPPENED DURING SETUP (summary)
   9. Fixed modbus_eastron.yaml on HA (had duplicate 'modbus:' root key)
   10. Restarted HA core to load Modbus YAML → 34 Modbus sensors came live
   11. Fixed dashboard entity IDs to use Modbus sensors (correct full names)
+  12. Added Statistics view with 5 statistics-graph cards via WebSocket API
 
 NORMAL VALUES FOR 1-PHASE CONNECTION ON L1
 --------------------------------------------

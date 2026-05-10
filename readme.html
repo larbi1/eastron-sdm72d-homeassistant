@@ -163,8 +163,8 @@ journalctl --user -u eastron_bridge -f    <span class="c"># live logs</span></pr
 
   <!-- DASHBOARD -->
   <h2>Lovelace Dashboard</h2>
-  <p>URL: <a href="http://192.168.0.4:8123/lovelace/eastron-overview" style="color:#93c5fd">http://192.168.0.4:8123/lovelace/eastron-overview</a></p>
-  <p>3 views: <strong>Overview</strong> (gauge dials + totals) &bull; <strong>Per Phase</strong> (gauge dials per phase + power/PF) &bull; <strong>Energy History</strong> (graphs)</p>
+  <p>URL: <a href="http://192.168.0.4:8123/lovelace" style="color:#93c5fd">http://192.168.0.4:8123/lovelace</a></p>
+  <p>4 views: <strong>Overview</strong> (gauge dials + totals) &bull; <strong>Per Phase</strong> (gauge dials per phase + power/PF) &bull; <strong>Energy History</strong> (raw graphs, 24h) &bull; <strong>Statistics</strong> (daily/monthly aggregates)</p>
   <p>The dashboard was pushed directly to HA via the WebSocket API (<code>lovelace/config/save</code>) &mdash; no YAML file on disk.</p>
 
   <h2>Graphical Gauge Cards</h2>
@@ -191,6 +191,49 @@ severity:
   green: 216
   yellow: 253
   red: 258</pre>
+
+  <!-- STATISTICS -->
+  <h2>Statistics-Graph Cards (Statistics View)</h2>
+  <p>HA automatically records long-term hourly statistics for every sensor that declares a <code>state_class</code>. No extra addon is needed &mdash; it works out of the box with the Modbus sensors.</p>
+
+  <table>
+    <tr><th>state_class value</th><th>Used for</th><th>Stat type</th></tr>
+    <tr><td><code>measurement</code></td><td>Power, voltage, current, frequency</td><td>mean / min / max</td></tr>
+    <tr><td><code>total_increasing</code></td><td>Energy counters (kWh, kVArh)</td><td>sum</td></tr>
+  </table>
+
+  <p>The <strong>Statistics</strong> view was added to the dashboard via the HA WebSocket API using a Python script:</p>
+  <div class="step"><div class="step-num">1</div><div class="step-text">Authenticated: <code>POST /auth/login_flow</code> → submit credentials → <code>POST /auth/token</code> with the returned code</div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-text">Opened a raw WebSocket to <code>ws://192.168.0.4:8123/api/websocket</code> and sent <code>{"type":"auth","access_token":"..."}</code></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-text">Fetched the existing dashboard: <code>{"type":"lovelace/config"}</code></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-text">Appended the Statistics view (list of 5 <code>statistics-graph</code> cards) to the <code>views</code> array</div></div>
+  <div class="step"><div class="step-num">5</div><div class="step-text">Saved back: <code>{"type":"lovelace/config/save","config":{...}}</code></div></div>
+
+  <h3>The 5 cards in the Statistics view</h3>
+  <table>
+    <tr><th>Card</th><th>Period</th><th>stat_types</th><th>What it shows</th></tr>
+    <tr><td>Energy Import / Export</td><td>month</td><td>sum</td><td>kWh imported and exported per month</td></tr>
+    <tr><td>Total Active Energy</td><td>month</td><td>sum</td><td>Total consumed energy per month</td></tr>
+    <tr><td>Total Active Power</td><td>day</td><td>mean, max</td><td>Average and peak wattage per day</td></tr>
+    <tr><td>Per-Phase Active Power</td><td>day</td><td>mean</td><td>L1/L2/L3 average wattage per day</td></tr>
+    <tr><td>Per-Phase Voltage</td><td>day</td><td>mean, min, max</td><td>Daily voltage stability per phase</td></tr>
+  </table>
+
+  <p>Each card has a <strong>period selector</strong> in its top-right corner. Click it to switch between hour / day / week / month / year live in the UI.</p>
+
+  <div class="warn">HA does not backfill statistics. Data accumulates from the moment the sensors were first created. There is no historical data before the sensors came online.</div>
+
+  <p>Example YAML for a statistics-graph card (add via Add Card &rarr; Manual):</p>
+  <pre>type: statistics-graph
+title: Energy Import / Export (Monthly)
+period: month
+stat_types:
+  - sum
+entities:
+  - entity: sensor.sdm72d_import_energy
+    name: Import
+  - entity: sensor.sdm72d_export_energy
+    name: Export</pre>
 
   <!-- SSH -->
   <h2>SSH Access to Home Assistant</h2>
@@ -219,6 +262,7 @@ severity:
   <div class="step"><div class="step-num">9</div><div class="step-text">Got SSH access &rarr; found <code>modbus_eastron.yaml</code> already on HA but with a duplicate <code>modbus:</code> root key causing HA to reject it. Fixed the file (removed the root key and de-indented).</div></div>
   <div class="step"><div class="step-num">10</div><div class="step-text">Restarted HA core &rarr; Modbus integration loaded &rarr; all 34 Modbus sensors came live.</div></div>
   <div class="step"><div class="step-num">11</div><div class="step-text">Fixed dashboard entity IDs: the Modbus sensor names differ from the MQTT ones (e.g. <code>average_l_n_voltage</code> vs <code>avg_ln_voltage</code>). Updated the dashboard to use the correct Modbus IDs.</div></div>
+  <div class="step"><div class="step-num">12</div><div class="step-text">Added a Statistics view with 5 <code>statistics-graph</code> cards (daily/monthly power, energy, and voltage charts) via the WebSocket API.</div></div>
 
   <!-- NORMAL VALUES -->
   <h2>Expected Values for 1-Phase Connection on L1</h2>

@@ -93,14 +93,15 @@
     <tr><td>Eastron SDM72D-M-2</td><td>3-phase energy meter, direct connection up to 100 A</td></tr>
     <tr><td>Waveshare 8-CH RS485 TO POE ETH (B)</td><td>RS485-to-Ethernet gateway</td></tr>
     <tr><td>Home Assistant instance</td><td>Version 2023.x or newer</td></tr>
-    <tr><td>Python 3.6+ machine on the same network</td><td>For running the deploy script. Can be the HA host or any VM/Pi.</td></tr>
+    <tr><td>Linux/Mac with bash, curl, python3</td><td>For running the deploy script. Can be the HA host, any VM, or Raspberry Pi.</td></tr>
     <tr><td>SSH client</td><td>For copying the Modbus YAML config onto HA</td></tr>
   </table>
 
   <h3>Files in this repository</h3>
   <table>
     <tr><th>File</th><th>Purpose</th></tr>
-    <tr><td><code>deploy_dashboard.py</code></td><td><strong>Run this</strong> to push the Lovelace dashboard to HA</td></tr>
+    <tr><td><code>deploy_dashboard.sh</code></td><td><strong>Run this</strong> to push the Lovelace dashboard to HA (bash)</td></tr>
+    <tr><td><code>dashboard.json</code></td><td>Dashboard definition — 4 views, all cards. Edit to customise.</td></tr>
     <tr><td><code>modbus_eastron.yaml</code></td><td>Modbus sensor config — copy to HA <code>/config/</code></td></tr>
     <tr><td><code>eastron_mqtt_bridge.py</code></td><td>Optional MQTT bridge (secondary data path)</td></tr>
     <tr><td><code>eastron_bridge.service</code></td><td>Systemd service for the MQTT bridge</td></tr>
@@ -277,22 +278,27 @@ nano /config/configuration.yaml</pre>
   <!-- STEP 6 -->
   <h2 id="step6">Step 6 &mdash; Deploy the Lovelace Dashboard</h2>
 
-  <p>Run <code>deploy_dashboard.py</code> from any machine on the same network as HA. Python 3.6+ required, no extra packages needed.</p>
+  <p>Run <code>deploy_dashboard.sh</code> from any machine on the same network as HA. Requirements: <strong>bash, curl, python3</strong> (standard on any Linux/Mac). <code>dashboard.json</code> must be in the same directory.</p>
 
   <div class="step"><div class="step-num">6a</div><div class="step-text">
-    <strong>Edit <code>deploy_dashboard.py</code></strong> &mdash; set the three variables at the top:
-    <pre>HA_HOST = "192.168.0.4"   <span class="c"># your HA IP address</span>
-HA_USER = "admin"         <span class="c"># your HA username</span>
-HA_PASS = "yourpassword"  <span class="c"># your HA password</span></pre>
+    <strong>Edit <code>deploy_dashboard.sh</code></strong> &mdash; set the three variables at the top:
+    <pre>HA_HOST="192.168.0.4"   <span class="c"># your HA IP address</span>
+HA_USER="admin"         <span class="c"># your HA username</span>
+HA_PASS="yourpassword"  <span class="c"># your HA password</span></pre>
   </div></div>
 
   <div class="step"><div class="step-num">6b</div><div class="step-text">
     <strong>Run the script:</strong>
-    <pre>python3 deploy_dashboard.py</pre>
+    <pre>bash deploy_dashboard.sh</pre>
     Successful output ends with:
     <pre>Dashboard deployed successfully.
 Open: http://&lt;HA_IP&gt;:8123/lovelace</pre>
   </div></div>
+
+  <div class="info">
+    To customise the dashboard layout, edit <code>dashboard.json</code> and re-run the script.<br>
+    The script uses <code>python3</code> internally only for the WebSocket transport (HA does not expose the Lovelace save API over REST). All configuration and logic is in bash.
+  </div>
 
   <div class="step"><div class="step-num">6c</div><div class="step-text">
     <strong>Open the dashboard:</strong> <code>http://&lt;HA_IP&gt;:8123/lovelace</code>

@@ -1,0 +1,554 @@
+{
+  "title": "Eastron SDM72D-M",
+  "views": [
+    {
+      "title": "Overview",
+      "path": "eastron-overview",
+      "icon": "mdi:lightning-bolt",
+      "cards": [
+        {
+          "type": "horizontal-stack",
+          "cards": [
+            {
+              "type": "gauge",
+              "entity": "sensor.sdm72d_l1_voltage",
+              "name": "L1 Voltage",
+              "min": 195,
+              "max": 265,
+              "needle": true,
+              "severity": {
+                "green": 216,
+                "yellow": 253,
+                "red": 258
+              }
+            },
+            {
+              "type": "gauge",
+              "entity": "sensor.sdm72d_frequency",
+              "name": "Frequency",
+              "min": 49,
+              "max": 51,
+              "needle": true,
+              "severity": {
+                "green": 49.5,
+                "yellow": 50.5,
+                "red": 50.8
+              }
+            },
+            {
+              "type": "gauge",
+              "entity": "sensor.sdm72d_total_active_power",
+              "name": "Active Power",
+              "min": 0,
+              "max": 23000,
+              "needle": true,
+              "severity": {
+                "green": 0,
+                "yellow": 15000,
+                "red": 20000
+              }
+            }
+          ]
+        },
+        {
+          "type": "horizontal-stack",
+          "cards": [
+            {
+              "type": "gauge",
+              "entity": "sensor.sdm72d_l1_current",
+              "name": "L1 Current",
+              "min": 0,
+              "max": 100,
+              "needle": true,
+              "severity": {
+                "green": 0,
+                "yellow": 63,
+                "red": 85
+              }
+            },
+            {
+              "type": "gauge",
+              "entity": "sensor.sdm72d_total_power_factor",
+              "name": "Power Factor",
+              "min": 0,
+              "max": 1,
+              "needle": true,
+              "severity": {
+                "green": 0.9,
+                "yellow": 0.7,
+                "red": 0
+              }
+            },
+            {
+              "type": "gauge",
+              "entity": "sensor.sdm72d_neutral_current",
+              "name": "Neutral Current",
+              "min": 0,
+              "max": 100,
+              "needle": true,
+              "severity": {
+                "green": 0,
+                "yellow": 10,
+                "red": 30
+              }
+            }
+          ]
+        },
+        {
+          "type": "entities",
+          "title": "System Totals",
+          "entities": [
+            {
+              "entity": "sensor.sdm72d_total_active_power",
+              "name": "Active Power",
+              "icon": "mdi:flash"
+            },
+            {
+              "entity": "sensor.sdm72d_total_apparent_power",
+              "name": "Apparent Power",
+              "icon": "mdi:flash-outline"
+            },
+            {
+              "entity": "sensor.sdm72d_total_reactive_power",
+              "name": "Reactive Power",
+              "icon": "mdi:flash-circle"
+            },
+            {
+              "entity": "sensor.sdm72d_total_power_factor",
+              "name": "Power Factor",
+              "icon": "mdi:angle-acute"
+            },
+            {
+              "entity": "sensor.sdm72d_frequency",
+              "name": "Frequency",
+              "icon": "mdi:sine-wave"
+            },
+            {
+              "type": "divider"
+            },
+            {
+              "entity": "sensor.sdm72d_import_energy",
+              "name": "Import Energy",
+              "icon": "mdi:transmission-tower-import"
+            },
+            {
+              "entity": "sensor.sdm72d_export_energy",
+              "name": "Export Energy",
+              "icon": "mdi:transmission-tower-export"
+            },
+            {
+              "entity": "sensor.sdm72d_total_active_energy",
+              "name": "Total Active Energy",
+              "icon": "mdi:counter"
+            },
+            {
+              "entity": "sensor.sdm72d_total_reactive_energy",
+              "name": "Total Reactive Energy",
+              "icon": "mdi:counter"
+            }
+          ]
+        },
+        {
+          "type": "glance",
+          "title": "Averages",
+          "columns": 3,
+          "entities": [
+            {
+              "entity": "sensor.sdm72d_average_l_n_voltage",
+              "name": "Avg L-N V"
+            },
+            {
+              "entity": "sensor.sdm72d_average_l_l_voltage",
+              "name": "Avg L-L V"
+            },
+            {
+              "entity": "sensor.sdm72d_average_line_current",
+              "name": "Avg Current"
+            },
+            {
+              "entity": "sensor.sdm72d_neutral_current",
+              "name": "Neutral A"
+            },
+            {
+              "entity": "sensor.sdm72d_frequency",
+              "name": "Frequency"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Per Phase",
+      "path": "eastron-phases",
+      "icon": "mdi:chart-bar",
+      "cards": [
+        {
+          "type": "horizontal-stack",
+          "cards": [
+            {
+              "type": "gauge",
+              "entity": "sensor.sdm72d_l1_voltage",
+              "name": "L1 Voltage",
+              "min": 195,
+              "max": 265,
+              "needle": true,
+              "severity": {
+                "green": 216,
+                "yellow": 253,
+                "red": 258
+              }
+            },
+            {
+              "type": "gauge",
+              "entity": "sensor.sdm72d_l2_voltage",
+              "name": "L2 Voltage",
+              "min": 195,
+              "max": 265,
+              "needle": true,
+              "severity": {
+                "green": 216,
+                "yellow": 253,
+                "red": 258
+              }
+            },
+            {
+              "type": "gauge",
+              "entity": "sensor.sdm72d_l3_voltage",
+              "name": "L3 Voltage",
+              "min": 195,
+              "max": 265,
+              "needle": true,
+              "severity": {
+                "green": 216,
+                "yellow": 253,
+                "red": 258
+              }
+            }
+          ]
+        },
+        {
+          "type": "horizontal-stack",
+          "cards": [
+            {
+              "type": "gauge",
+              "entity": "sensor.sdm72d_l1_current",
+              "name": "L1 Current",
+              "min": 0,
+              "max": 100,
+              "needle": true,
+              "severity": {
+                "green": 0,
+                "yellow": 63,
+                "red": 85
+              }
+            },
+            {
+              "type": "gauge",
+              "entity": "sensor.sdm72d_l2_current",
+              "name": "L2 Current",
+              "min": 0,
+              "max": 100,
+              "needle": true,
+              "severity": {
+                "green": 0,
+                "yellow": 63,
+                "red": 85
+              }
+            },
+            {
+              "type": "gauge",
+              "entity": "sensor.sdm72d_l3_current",
+              "name": "L3 Current",
+              "min": 0,
+              "max": 100,
+              "needle": true,
+              "severity": {
+                "green": 0,
+                "yellow": 63,
+                "red": 85
+              }
+            }
+          ]
+        },
+        {
+          "type": "glance",
+          "title": "Line-to-Line Voltages",
+          "columns": 3,
+          "entities": [
+            {
+              "entity": "sensor.sdm72d_l1_l2_voltage",
+              "name": "L1-L2"
+            },
+            {
+              "entity": "sensor.sdm72d_l2_l3_voltage",
+              "name": "L2-L3"
+            },
+            {
+              "entity": "sensor.sdm72d_l3_l1_voltage",
+              "name": "L3-L1"
+            }
+          ]
+        },
+        {
+          "type": "glance",
+          "title": "Active Power (W)",
+          "columns": 3,
+          "entities": [
+            {
+              "entity": "sensor.sdm72d_l1_active_power",
+              "name": "L1"
+            },
+            {
+              "entity": "sensor.sdm72d_l2_active_power",
+              "name": "L2"
+            },
+            {
+              "entity": "sensor.sdm72d_l3_active_power",
+              "name": "L3"
+            }
+          ]
+        },
+        {
+          "type": "glance",
+          "title": "Reactive Power (VAr)",
+          "columns": 3,
+          "entities": [
+            {
+              "entity": "sensor.sdm72d_l1_reactive_power",
+              "name": "L1"
+            },
+            {
+              "entity": "sensor.sdm72d_l2_reactive_power",
+              "name": "L2"
+            },
+            {
+              "entity": "sensor.sdm72d_l3_reactive_power",
+              "name": "L3"
+            }
+          ]
+        },
+        {
+          "type": "glance",
+          "title": "Apparent Power (VA)",
+          "columns": 3,
+          "entities": [
+            {
+              "entity": "sensor.sdm72d_l1_apparent_power",
+              "name": "L1"
+            },
+            {
+              "entity": "sensor.sdm72d_l2_apparent_power",
+              "name": "L2"
+            },
+            {
+              "entity": "sensor.sdm72d_l3_apparent_power",
+              "name": "L3"
+            }
+          ]
+        },
+        {
+          "type": "glance",
+          "title": "Power Factor",
+          "columns": 3,
+          "entities": [
+            {
+              "entity": "sensor.sdm72d_l1_power_factor",
+              "name": "L1"
+            },
+            {
+              "entity": "sensor.sdm72d_l2_power_factor",
+              "name": "L2"
+            },
+            {
+              "entity": "sensor.sdm72d_l3_power_factor",
+              "name": "L3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Energy History",
+      "path": "eastron-energy",
+      "icon": "mdi:chart-line",
+      "cards": [
+        {
+          "type": "energy-date-selection"
+        },
+        {
+          "type": "statistics-graph",
+          "title": "Import vs Export Energy",
+          "entities": [
+            {
+              "entity": "sensor.sdm72d_import_energy",
+              "name": "Import"
+            },
+            {
+              "entity": "sensor.sdm72d_export_energy",
+              "name": "Export"
+            }
+          ],
+          "stat_types": [
+            "sum"
+          ],
+          "period": "day"
+        },
+        {
+          "type": "statistics-graph",
+          "title": "Total Active Power History",
+          "entities": [
+            {
+              "entity": "sensor.sdm72d_total_active_power",
+              "name": "Active Power"
+            }
+          ],
+          "stat_types": [
+            "mean",
+            "max"
+          ],
+          "period": "hour"
+        },
+        {
+          "type": "history-graph",
+          "title": "Phase Voltages (Last 24h)",
+          "entities": [
+            {
+              "entity": "sensor.sdm72d_l1_voltage",
+              "name": "L1"
+            },
+            {
+              "entity": "sensor.sdm72d_l2_voltage",
+              "name": "L2"
+            },
+            {
+              "entity": "sensor.sdm72d_l3_voltage",
+              "name": "L3"
+            }
+          ],
+          "hours_to_show": 24,
+          "refresh_interval": 60
+        },
+        {
+          "type": "history-graph",
+          "title": "Phase Currents (Last 24h)",
+          "entities": [
+            {
+              "entity": "sensor.sdm72d_l1_current",
+              "name": "L1"
+            },
+            {
+              "entity": "sensor.sdm72d_l2_current",
+              "name": "L2"
+            },
+            {
+              "entity": "sensor.sdm72d_l3_current",
+              "name": "L3"
+            }
+          ],
+          "hours_to_show": 24,
+          "refresh_interval": 60
+        }
+      ]
+    },
+    {
+      "title": "Statistics",
+      "path": "statistics",
+      "icon": "mdi:chart-bar",
+      "cards": [
+        {
+          "type": "statistics-graph",
+          "title": "Energy Import / Export (Monthly)",
+          "period": "month",
+          "stat_types": [
+            "sum"
+          ],
+          "entities": [
+            {
+              "entity": "sensor.sdm72d_import_energy",
+              "name": "Import"
+            },
+            {
+              "entity": "sensor.sdm72d_export_energy",
+              "name": "Export"
+            }
+          ]
+        },
+        {
+          "type": "statistics-graph",
+          "title": "Total Active Energy (Monthly)",
+          "period": "month",
+          "stat_types": [
+            "sum"
+          ],
+          "entities": [
+            {
+              "entity": "sensor.sdm72d_total_active_energy",
+              "name": "Total kWh"
+            }
+          ]
+        },
+        {
+          "type": "statistics-graph",
+          "title": "Total Active Power \u2014 Daily Mean / Max",
+          "period": "day",
+          "stat_types": [
+            "mean",
+            "max"
+          ],
+          "entities": [
+            {
+              "entity": "sensor.sdm72d_total_active_power",
+              "name": "Total Power"
+            }
+          ]
+        },
+        {
+          "type": "statistics-graph",
+          "title": "Per-Phase Active Power (Daily Mean)",
+          "period": "day",
+          "stat_types": [
+            "mean"
+          ],
+          "entities": [
+            {
+              "entity": "sensor.sdm72d_l1_active_power",
+              "name": "L1"
+            },
+            {
+              "entity": "sensor.sdm72d_l2_active_power",
+              "name": "L2"
+            },
+            {
+              "entity": "sensor.sdm72d_l3_active_power",
+              "name": "L3"
+            }
+          ]
+        },
+        {
+          "type": "statistics-graph",
+          "title": "Per-Phase Voltage (Daily Mean / Min / Max)",
+          "period": "day",
+          "stat_types": [
+            "mean",
+            "min",
+            "max"
+          ],
+          "entities": [
+            {
+              "entity": "sensor.sdm72d_l1_voltage",
+              "name": "L1"
+            },
+            {
+              "entity": "sensor.sdm72d_l2_voltage",
+              "name": "L2"
+            },
+            {
+              "entity": "sensor.sdm72d_l3_voltage",
+              "name": "L3"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

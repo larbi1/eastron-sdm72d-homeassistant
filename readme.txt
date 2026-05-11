@@ -11,13 +11,14 @@ HARDWARE REQUIRED
 WHAT YOU NEED
 -------------
   - Home Assistant instance (2023.x or newer) on your network
-  - A machine with Python 3.6+ on the same network as HA
-    (can be a VM, Raspberry Pi, or any Linux/Mac/Windows machine)
+  - A Linux/Mac machine with bash, curl, and python3 on the same network as HA
+    (python3 is used only as a WebSocket transport — all logic is in bash)
   - SSH client
 
 FILES IN THIS REPOSITORY
 -------------------------
-  deploy_dashboard.py         Run this to push the Lovelace dashboard to HA
+  deploy_dashboard.sh         Run this to push the Lovelace dashboard to HA
+  dashboard.json              Dashboard definition (4 views, all cards)
   modbus_eastron.yaml         Modbus sensor config — copy this to HA /config/
   eastron_mqtt_bridge.py      Optional MQTT bridge (secondary data path)
   eastron_bridge.service      Systemd service for the MQTT bridge
@@ -194,21 +195,24 @@ Connect your Eastron meter to channel 1 (or any channel — just note which one)
   STEP 6 — DEPLOY THE LOVELACE DASHBOARD
 ================================================================================
 
-  Run deploy_dashboard.py from any machine on the same network as HA.
-  Python 3.6+ is required. No extra packages needed.
+  Run deploy_dashboard.sh from any machine on the same network as HA.
+  Requirements: bash, curl, python3 (standard on any Linux/Mac).
 
-  6a. Edit deploy_dashboard.py
+  6a. Edit deploy_dashboard.sh
       Open the file and set the three variables at the top:
-        HA_HOST = "192.168.0.4"   ← your HA IP address
-        HA_USER = "admin"         ← your HA username (for the UI login)
-        HA_PASS = "yourpassword"  ← your HA password
+        HA_HOST="192.168.0.4"    ← your HA IP address
+        HA_USER="admin"          ← your HA username (for the UI login)
+        HA_PASS="yourpassword"   ← your HA password
 
   6b. Run the script
-        python3 deploy_dashboard.py
+        bash deploy_dashboard.sh
 
       Successful output ends with:
         Dashboard deployed successfully.
         Open: http://<HA_IP>:8123/lovelace
+
+  NOTE: dashboard.json must be in the same directory as deploy_dashboard.sh.
+  To change the dashboard layout, edit dashboard.json directly.
 
   6c. Open the dashboard
         http://<HA_IP>:8123/lovelace
